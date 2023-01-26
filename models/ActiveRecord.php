@@ -23,7 +23,7 @@ class ActiveRecord {
         return static::$alertas;
     }
 
-    public function validar() {
+    public function validar($tipoValidacion) {
         static::$alertas = [];
         return static::$alertas;
     }
