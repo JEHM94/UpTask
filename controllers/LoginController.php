@@ -77,6 +77,25 @@ class LoginController
             $alertas = $usuario->validar(RECUPERAR_CUENTA);
 
             if (empty($alertas)) {
+                // Busca el usuario
+                $usuario = Usuario::where('email', $usuario->email);
+
+                if ($usuario && $usuario->confirmado === '1') {
+                    // Elimina password2 para evitar errores al guardar en DB
+                    unset($usuario->password2);
+                    // Genera un nuevo token 
+                    $usuario->crearToken();
+                    // Actualiza el Usuario
+                    if ($usuario->guardar()) {
+                        // Envia E-mail de Recuperación de contraseña
+                        $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
+                        $email->enviarConfirmacion(RECUPERAR_CUENTA);
+                        // Genera Alerta
+                        Usuario::setAlerta(EXITO, 'Hemos enviado un e-mail con las intrucciones para reestablecer tu contraseña');
+                    }
+                } else {
+                    Usuario::setAlerta(ERROR, 'El usuario no existe o no está confirmado');
+                }
             }
         }
 
@@ -91,12 +110,52 @@ class LoginController
 
     public static function reestablecer(Router $router)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Obtiene el token ingresado por la URL
+        $token = s($_GET['token'] ?? '');
+        // Si no hay ningún token, redirecciona a /
+        if (!$token) header('Location: /');
+
+        // Busca al usuario con el token ingresado
+        $usuario = Usuario::where('token', $token);
+
+        // Genera alerta Si no hay ningún usuario o si no está confirmado
+        if (empty($usuario) || $usuario->confirmado === '0') {
+            // No se encontró un usuario con ese token
+            Usuario::setAlerta(ERROR, 'Token no válido');
         }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($usuario) {
+                // Añadimos el Nuevo Password
+                $usuario->sincronizar($_POST);
+                // Validamos el Password
+                $alertas = $usuario->validar(CAMBIAR_PASSWORD);
+
+                if (empty($alertas)) {
+                    // Hashea el nuevo Password
+                    $usuario->hashPassword();
+                    // Elimina password2 para evitar errores al guardar en DB
+                    unset($usuario->password2);
+                    // Elimina el token
+                    $usuario->token = null;
+                    // Guardamos cambios
+                    if ($usuario->guardar()) {
+                        // Creamos Alerta
+                        Usuario::setAlerta(EXITO, 'Contraseña cambiada Exitosamente');
+                        // Eliminamos los datos en memoria
+                        unset($usuario);
+                    }
+                }
+            }
+        }
+
+        $alertas = Usuario::getAlertas();
 
         // Render a la Vista
         $router->render('auth/reestablecer', [
-            'titulo' => 'Reestablecer Contraseña'
+            'titulo' => 'Reestablecer Contraseña',
+            'usuario' => $usuario ?? '',
+            'alertas' => $alertas
         ]);
     }
 
@@ -109,17 +168,19 @@ class LoginController
     public static function confirmar(Router $router)
     {
         // Obtiene el token ingresado por la URL
-        $token = s($_GET['token']);
+        $token = s($_GET['token'] ?? '');
         // Si no hay ningún token, redirecciona a /
         if (!$token) header('Location: /');
 
         // Busca al usuario con el token ingresado
         $usuario = Usuario::where('token', $token);
-        // Si no hay ningún usuario, redirecciona a /
-        if (empty($usuario)) {
+
+        // Genera alerta Si no hay ningún usuario o si ya está confirmado
+        if (empty($usuario) || $usuario->confirmado === '1') {
             // No se encontró un usuario con ese token
             Usuario::setAlerta(ERROR, 'Token no válido');
         } else {
+            // Usuario Encontrado y no ha Sido confirmado aún
             // Confirmar la cuenta
             $usuario->confirmado = 1;
             // Elimina el token

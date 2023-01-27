@@ -52,7 +52,7 @@ class Usuario extends ActiveRecord
                 } else if (strlen($this->password) < 6) {
                     self::$alertas[ERROR][] = 'La contraseña debe contener almenos 6 caracteres';
                 } else if ($this->password !== $this->password2) {
-                    self::$alertas[ERROR][] = 'Las contraseña no coinciden';
+                    self::$alertas[ERROR][] = 'Las contraseñas no coinciden';
                 }
 
                 return self::$alertas;
@@ -90,11 +90,12 @@ class Usuario extends ActiveRecord
                 // Validación de Contraseña de Usuario
                 if (!$this->password) {
                     self::$alertas[ERROR][] = 'Debe Ingresar una Contraseña';
-                } else {
-                    if (strlen($this->password) < 6) {
-                        self::$alertas[ERROR][] = 'La Contraseña debe tener un mínimo de 6 caracteres';
-                    }
+                } else if (strlen($this->password) < 6) {
+                    self::$alertas[ERROR][] = 'La Contraseña debe tener un mínimo de 6 caracteres';
+                } else if ($this->password !== $this->password2) {
+                    self::$alertas[ERROR][] = 'Las contraseñas no coinciden';
                 }
+
                 return self::$alertas;
 
             default:

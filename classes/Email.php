@@ -66,14 +66,14 @@ class Email
                 $contenido .= '<p><strong>Hola ' . $receptor . '.</strong></p>';
                 $contenido .= '<p>Se ha solicitado el reestablecimiento de tu Contraseña.</p>';
                 $contenido .= '<p>Haga click en el siguiente enlace para reestablecer su contraseña y poder acceder a su cuenta.</p>';
-                $contenido .= '<p><a href="http://127.0.0.1:3000/recuperar?token=';
+                $contenido .= '<p><a href="http://127.0.0.1:3000/reestablecer?token=';
                 $contenido .= $this->token;
                 $contenido .= '">Reestablecer Contraseña</a></p>';
                 $contenido .= '<p><strong>Si usted no solicitó la información anterior, puede ignorar este mensaje.</strong></p>';
                 $contenido .= '</html>';
 
                 // Texto plano alternativo
-                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en AppSalon: http://127.0.0.1:3000/confirmar-cuenta?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en AppSalon: http://127.0.0.1:3000/reestablecer?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
                 break;
             default:
                 $contenido = '';
