@@ -11,11 +11,43 @@ class LoginController
     public static function login(Router $router)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Instanciamos un nuevo usuario con los datos del formulario
+            $usuario = new Usuario($_POST);
+            // Validamos los datos del formulario
+            $alertas = $usuario->validar(CUENTA_EXISTENTE);
+
+            if (empty($alertas)) {
+                // Comprueba que el Email exista
+                $usuario = Usuario::where('email', $usuario->email);
+
+                if (!$usuario || !$usuario->confirmado) {
+                    // Alerta de Usuario no encontrado
+                    Usuario::setAlerta(ERROR, 'El E-mail no se encuentra registrado o no ha sido confirmado');
+                } else {
+                    // El usuario existe, procede a comprobar su contraseña
+                    if (!password_verify($_POST['password'], $usuario->password)) {
+                        // Contraseña incorrecta
+                        Usuario::setAlerta(ERROR, 'Contraseña incorrecta');
+                    } else {
+                        // Autenticamos al usuario
+                        $_SESSION['id'] = $usuario->id;
+                        $_SESSION['nombre'] = $usuario->nombre;
+                        $_SESSION['email'] = $usuario->email;
+                        $_SESSION['login'] = true;
+
+                        // Redireccionamos al Módilo de Proyectos
+                        header('Location: /proyectos');
+                    }
+                }
+            }
         }
 
+        // Obtenemos las alertas para pasarlas a la vista
+        $alertas = Usuario::getAlertas();
         // Render a la Vista
         $router->render('auth/login', [
-            'titulo' => 'Iniciar Sesión'
+            'titulo' => 'Iniciar Sesión',
+            'alertas' => $alertas
         ]);
     }
 
