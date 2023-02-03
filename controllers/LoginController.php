@@ -36,7 +36,7 @@ class LoginController
                         $_SESSION['login'] = true;
 
                         // Redireccionamos al Módilo de Proyectos
-                        header('Location: /proyectos');
+                        header('Location: /dashboard');
                     }
                 }
             }
@@ -53,7 +53,8 @@ class LoginController
 
     public static function logout()
     {
-        echo 'Desde Logout';
+        $_SESSION = [];
+        header('Location: /');
     }
 
     public static function crear(Router $router)

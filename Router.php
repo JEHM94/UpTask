@@ -37,7 +37,20 @@ class Router
 
         // Array de Rutas Protegidas
         $protectedRoutes = [
-            '',
+            '/dashboard',
+            '/crear-proyecto',
+            '/perfil',
+
+        ];
+
+        // Array de Rutas Login
+        $loginRoutes = [
+            '/',
+            '/crear',
+            '/olvide',
+            '/reestablecer',
+            '/mensaje',
+            '/confirmar',
 
         ];
 
@@ -50,12 +63,24 @@ class Router
         // y el usuario no está autenticado, redirecciona a /
         if (in_array($currentUrl, $protectedRoutes) && !$auth) {
             header('Location: /');
+            // Retorna para prevenir la ejecución del código del controlador y la función asociada
+            return;
+        }
+
+        // Si la Url actual es una ruta de login
+        // y ya existe una sesión activa, redirecciona a /dashboard
+        if (in_array($currentUrl, $loginRoutes) && $auth) {
+            header('Location: /dashboard');
+            // Retorna para prevenir la ejecución del código del controlador y la función asociada
+            return;
         }
 
         // Si la Url actual es una ruta de Administrador
         // y el usuario no está autenticado como Admin, redirecciona a /
         if (in_array($currentUrl, $adminRoutes) && !$admin) {
             header('Location: /');
+            // Retorna para prevenir la ejecución del código del controlador y la función asociada
+            return;
         }
 
 
@@ -63,7 +88,7 @@ class Router
         //******* RUTAS PROTEGIDAS FIN ******
 
 
-        if ( $fn ) {
+        if ($fn) {
             // Call user fn va a llamar una función cuando no sabemos cual sera
             call_user_func($fn, $this); // This es para pasar argumentos
         } else {

@@ -2,7 +2,9 @@
 
 require_once __DIR__ . '/../includes/app.php';
 
+use Controllers\DashboardController;
 use Controllers\LoginController;
+use Controllers\Tareacontroller;
 use MVC\Router;
 
 $router = new Router();
@@ -29,8 +31,32 @@ $router->post('/reestablecer', [LoginController::class, 'reestablecer']);
 $router->get('/mensaje', [LoginController::class, 'mensaje']);
 $router->get('/confirmar', [LoginController::class, 'confirmar']);
 
-
 // ----- Cuentas END-----
+
+// ----- Proyectos-----
+$router->get('/dashboard', [DashboardController::class, 'index']);
+// Ver Proyecto
+$router->get('/proyecto', [DashboardController::class, 'proyecto']);
+// Crear Proyectos
+$router->get('/crear-proyecto', [DashboardController::class, 'crear_proyecto']);
+$router->post('/crear-proyecto', [DashboardController::class, 'crear_proyecto']);
+// Perfil de Usuario
+$router->get('/perfil', [DashboardController::class, 'perfil']);
+// ----- Proyectos END-----
+
+// ----- API Tareas-----
+// Ver Tareas
+$router->get('/api/tareas', [Tareacontroller::class, 'index']);
+// Crear Tareas
+$router->post('/api/tarea', [Tareacontroller::class, 'crear']);
+// Actualizar Tareas
+$router->post('/api/tarea/actualizar', [Tareacontroller::class, 'actualizar']);
+// Eliminar Tareas
+$router->post('/api/tarea/eliminar', [Tareacontroller::class, 'eliminar']);
+
+// ----- API Tareas END-----
+
+
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();

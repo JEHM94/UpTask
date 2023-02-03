@@ -25,8 +25,8 @@ class Email
         $mail->isSMTP();
         $mail->Host = 'smtp.mailtrap.io';
         $mail->SMTPAuth = true;
-        $mail->Username = '7b056232a0401d';
-        $mail->Password = '6b23b3db884e65';
+        $mail->Username = $_ENV['PHP_MAILER_USERNAME'] ?? '';
+        $mail->Password = $_ENV['PHP_MAILER_PASSWORD'] ?? '';
         $mail->SMTPSecure = 'tls';
         $mail->Port = 2525;
 

@@ -28,7 +28,7 @@ class Usuario extends ActiveRecord
         $this->confirmado = $arr['confirmado'] ?? 0;
     }
 
-    public function validar($tipoValidacion)
+    public function validar($tipoValidacion = null)
     {
         switch ($tipoValidacion) {
                 // Casos de Validaciones
