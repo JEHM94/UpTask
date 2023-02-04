@@ -50,10 +50,13 @@ class Tareacontroller
             // Asigna el ID del proyecto a la tarea
             $tarea->proyectos_id = $proyecto->id;
             // Guarda la nueva Tarea
-            if ($tarea->guardar()) {
+            $resultado = $tarea->guardar();
+            if ($resultado) {
                 $respuesta = [
                     'tipo' => 'exito',
-                    'mensaje' => 'Tarea agregada exitosamente'
+                    'mensaje' => 'Tarea agregada exitosamente',
+                    'id' => $resultado['id'],
+                    'proyectoId' => $proyecto->id
                 ];
                 echo json_encode($respuesta);
             }

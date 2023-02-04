@@ -5,6 +5,8 @@
 // Esto para evitar que las variables y funciones se
 // Mezclen con otras
 (function () {
+    // Arreglo de tareas
+    let tareas = [];
     // URL del Sitio
     const url = `${location.origin}`;
 
@@ -29,18 +31,73 @@
 
             const respuesta = await fetch(endPoint);
             const resultado = await respuesta.json();
-            
-            const { tareas } = resultado;
 
-            mostrarTareas(tareas);
+            tareas = resultado.tareas;
+
+            mostrarTareas();
 
         } catch (error) {
 
         }
     }
 
-    function mostrarTareas(tareas){
-        
+    function mostrarTareas() {
+        // Limpia las tareas previas si existen
+        limpiarTareas();
+
+        const contenedorTareas = document.querySelector('#listado-tareas');
+
+        // Verifica si existen tareas para mostrar
+        if (tareas.length === 0) {
+            // Scripting para mostrar el texto de No hay tareas 
+            const textoNoTareas = document.createElement('LI');
+            textoNoTareas.textContent = 'No Hay Tareas Disponibles';
+            textoNoTareas.classList.add('sin-tareas');
+            // Agrega el LI creado al contenedor de Tareas
+            contenedorTareas.appendChild(textoNoTareas);
+            return;
+        }
+
+        const estadosTarea = {
+            0: 'Pendiente',
+            1: 'Completa'
+        }
+        // Muestra las Tareas
+        tareas.forEach(tarea => {
+            const contenedorTarea = document.createElement('LI');
+            contenedorTarea.dataset.tareaId = tarea.id;
+            contenedorTarea.classList.add('tarea');
+
+            // Párrafo nombre de la Tarea
+            const nombreTarea = document.createElement('P');
+            nombreTarea.textContent = tarea.nombre;
+
+            // DIV para las opciones
+            const opcionesDiv = document.createElement('DIV');
+            opcionesDiv.classList.add('opciones');
+
+            // Botón Estado de la Tarea
+            const btnEstadoTarea = document.createElement('BUTTON');
+            btnEstadoTarea.classList.add('estado-tarea');
+            btnEstadoTarea.classList.add(`${estadosTarea[tarea.estado].toLowerCase()}`);
+            btnEstadoTarea.textContent = estadosTarea[tarea.estado];
+            btnEstadoTarea.dataset.estadoTarea = tarea.estado;
+
+            // Botón para Eliminar Tarea
+            const btnEliminarTarea = document.createElement('BUTTON');
+            btnEliminarTarea.classList.add('eliminar-tarea');
+            btnEliminarTarea.textContent = 'Eliminar';
+            btnEliminarTarea.dataset.idTarea = tarea.id;
+
+            // Agrega los Elementos creados
+            opcionesDiv.appendChild(btnEstadoTarea);
+            opcionesDiv.appendChild(btnEliminarTarea);
+
+            contenedorTarea.appendChild(nombreTarea);
+            contenedorTarea.appendChild(opcionesDiv);
+
+            contenedorTareas.appendChild(contenedorTarea);
+        });
     }
 
     function mostrarFormulario() {
@@ -151,11 +208,32 @@
                 const modal = document.querySelector('.modal');
                 setTimeout(() => {
                     modal.remove();
-                }, 3000);
+                }, 2000);
+
+                // Agregamos el Objeto de Tarea al Global de tareas
+                const tareaObj = {
+                    id: String(resultado.id),
+                    nombre: tarea,
+                    estado: "0",
+                    proyectoId: resultado.proyectoId
+                }
+
+                tareas = [...tareas, tareaObj];
+
+                // Aplica Virtual DOM para refrescar la vista
+                // y mostrar la nueva tarea sin consultar el servidor
+                mostrarTareas();
             }
 
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    function limpiarTareas() {
+        const listadoTareas = document.querySelector('#listado-tareas');
+        while (listadoTareas.firstChild) {
+            listadoTareas.removeChild(listadoTareas.firstChild);
         }
     }
 
