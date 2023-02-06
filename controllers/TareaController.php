@@ -66,12 +66,73 @@ class Tareacontroller
     public static function actualizar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $proyecto = Proyecto::where('url', $_POST['proyectoUrl']);
+
+            // Verifica si existe un proyecto con la Url ingresada
+            // Y si el usuario que intenta Editar la tarea es el mismo
+            // creador del proyecto
+            if (!$proyecto || $proyecto->usuarios_id !== $_SESSION['id']) {
+                $respuesta = [
+                    'tipo' => 'error',
+                    'mensaje' => 'Ha ocurrido un error al actualizar la tarea'
+                ];
+                echo json_encode($respuesta);
+                return;
+            }
+
+            // Instancia una nueva tarea con los Datos de la petición
+            $tarea = new Tarea($_POST);
+            // Asigna el ID del proyecto a la tarea
+            $tarea->proyectos_id = $proyecto->id;
+            // Actualiza la nueva Tarea
+            $resultado = $tarea->guardar();
+            if ($resultado) {
+                $respuesta = [
+                    'tipo' => 'exito',
+                    'mensaje' => 'Tarea actualizada exitosamente',
+                    'id' => $tarea->id,
+                    'proyectoId' => $proyecto->id
+                ];
+                echo json_encode($respuesta);
+            }
         }
     }
 
     public static function eliminar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $proyecto = Proyecto::where('url', $_POST['proyectoUrl']);
+
+            // Verifica si existe un proyecto con la Url ingresada
+            // Y si el usuario que intenta Eliminar la tarea es el mismo
+            // creador del proyecto
+            if (!$proyecto || $proyecto->usuarios_id !== $_SESSION['id']) {
+                $respuesta = [
+                    'tipo' => 'error',
+                    'mensaje' => 'Ha ocurrido un error al actualizar la tarea'
+                ];
+                echo json_encode($respuesta);
+                return;
+            }
+
+            // Instancia una nueva tarea con los Datos de la petición
+            $tarea = new Tarea($_POST);
+
+            // Elimina la tarea
+            $resultado = $tarea->eliminar();
+
+            if ($resultado) {
+                $respuesta = [
+                    'tipo' => 'exito',
+                    'mensaje' => 'Tarea Eliminada',
+                    'id' => $tarea->id,
+                    'proyectoId' => $proyecto->id
+                ];
+
+                echo json_encode($respuesta);
+            }
         }
     }
 }
