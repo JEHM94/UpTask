@@ -40,6 +40,7 @@ class Router
             '/dashboard',
             '/crear-proyecto',
             '/perfil',
+            '/perfil/cambiar-password'
 
         ];
 

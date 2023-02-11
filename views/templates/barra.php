@@ -3,7 +3,7 @@
         <h1>UpTask</h1>
     </a>
     <div class="menu">
-        <img src="build/img/menu.svg" alt="imagen menu" id="mobile-menu">
+        <img src="/build/img/menu.svg" alt="imagen menu" id="mobile-menu">
     </div>
 </div><!-- .barra-mobile -->
 

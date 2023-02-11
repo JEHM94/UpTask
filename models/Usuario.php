@@ -14,6 +14,8 @@ class Usuario extends ActiveRecord
     public $email;
     public $password;
     public $password2;
+    public $password_actual;
+    public $password_nuevo;
     public $token;
     public $confirmado;
 
@@ -24,11 +26,13 @@ class Usuario extends ActiveRecord
         $this->email = $arr['email'] ?? '';
         $this->password = $arr['password'] ?? '';
         $this->password2 = $arr['password2'] ?? null;
+        $this->password_actual = $arr['password_actual'] ?? '';
+        $this->password_nuevo = $arr['password_nuevo'] ?? '';
         $this->token = $arr['token'] ?? '';
         $this->confirmado = $arr['confirmado'] ?? 0;
     }
 
-    public function validar($tipoValidacion = null)
+    public function validar($tipoValidacion = null) : array
     {
         switch ($tipoValidacion) {
                 // Casos de Validaciones
@@ -98,19 +102,57 @@ class Usuario extends ActiveRecord
 
                 return self::$alertas;
 
+            case NUEVO_PASSWORD:
+                // Validación de cambio Contraseña
+                if (!$this->password_actual) {
+                    self::$alertas[ERROR][] = 'Debe Ingresar su Contraseña actual';
+                }
+                if (!$this->password_nuevo) {
+                    self::$alertas[ERROR][] = 'Debe Ingresar una Nueva Contraseña';
+                } else if (strlen($this->password_nuevo) < 6) {
+                    self::$alertas[ERROR][] = 'La nueva Contraseña debe tener un mínimo de 6 caracteres';
+                } else if ($this->password_nuevo !== $this->password2) {
+                    self::$alertas[ERROR][] = 'La contraseña nueva no coincide';
+                }
+
+                return self::$alertas;
+
+            case ACTUALIZAR_PERFIL:
+                if (!$this->nombre) {
+                    self::$alertas[ERROR][] = 'Su nombre no puede estar vacío';
+                }
+
+                // Validación de E-mail de Usuario
+                if (!$this->email) {
+                    self::$alertas[ERROR][] = 'Su E-mail no puede estar vacío';
+                } else {
+                    // Verifica que sea un email válido
+                    if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+                        self::$alertas[ERROR][] = 'E-mail no válido';
+                    }
+                }
+
+                return self::$alertas;
+
             default:
                 return null;
         }
     }
 
+    // Comprueba el password ingresado con el actual
+    public function comprobarPassword() : bool
+    {
+        return password_verify($this->password_actual, $this->password);
+    }
+
     // Hashea el Password
-    public function hashPassword()
+    public function hashPassword() : void
     {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }
 
     // Genera token para confirmación de cuenta
-    public function crearToken()
+    public function crearToken() : void
     {
         $this->token = uniqid();
         // Alternativa 32 caracteres
