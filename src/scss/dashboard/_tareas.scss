@@ -3,11 +3,17 @@
 
 .contenedor-nueva-tarea {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
     margin-top: 5rem;
-    margin-right: 2.1rem;
 
-    p{
+    @include m.tablet {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    p {
         margin: 0;
         font-weight: 700;
     }
@@ -34,6 +40,7 @@
     padding: .5rem 2rem;
     border-bottom: 2px solid darken(v.$grisClaro, 15%);
     display: flex;
+    margin-bottom: 1rem;
     justify-content: space-between;
     align-items: center;
 
@@ -58,7 +65,7 @@
             font-weight: 700;
             border-radius: 1rem;
 
-            &:hover{
+            &:hover {
                 cursor: pointer;
             }
         }
