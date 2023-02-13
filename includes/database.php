@@ -1,6 +1,13 @@
 <?php
 
-$db = mysqli_connect('localhost', 'root', 'root', 'uptask_mvc');
+$db = mysqli_connect(
+    $_ENV['DB_HOST'] ?? '',
+    $_ENV['DB_USERNAME'] ?? '',
+    $_ENV['DB_PASSWORD'] ?? '',
+    $_ENV['DB_NAME'] ?? ''
+);
+
+$db->set_charset("utf8");
 
 if (!$db) {
     echo "Error: No se pudo conectar a MySQL.";
