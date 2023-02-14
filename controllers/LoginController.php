@@ -84,9 +84,10 @@ class LoginController
                     if ($usuario->guardar()) {
                         // Enviamos el E-mail de Confirmación de cuenta
                         $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
-                        $email->enviarConfirmacion(CUENTA_NUEVA);
-                        // Redireccionamos
-                        header('Location: /mensaje');
+                        if ($email->enviarConfirmacion(CUENTA_NUEVA)) {
+                            // Redireccionamos
+                            header('Location: /mensaje');
+                        }
                     }
                 }
             }

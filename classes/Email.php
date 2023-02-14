@@ -28,13 +28,13 @@ class Email
         $mail->Username = $_ENV['PHP_MAILER_USERNAME'] ?? '';
         $mail->Password = $_ENV['PHP_MAILER_PASSWORD'] ?? '';
         $mail->SMTPSecure = 'tls';
-        $mail->Port = 2525;
+        $mail->Port = $_ENV['PHP_MAILER_PORT'] ?? '';
 
         // Config email Content
-        $mail->setFrom('cuentas@uptask.com');
+        //$mail->setFrom('cuentas@uptask.com');
+        $mail->setFrom($_ENV['PHP_MAILER_FROM'] ?? '');
         $receptor = $this->nombre;
         $mail->addAddress($this->email, $receptor);
-
 
         // Enable HTML
         $mail->isHTML(true);
