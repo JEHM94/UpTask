@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/app.php';
 
 use Controllers\DashboardController;
 use Controllers\LoginController;
-use Controllers\Tareacontroller;
+use Controllers\TareaController;
 use MVC\Router;
 
 $router = new Router();
@@ -50,13 +50,13 @@ $router->post('/perfil/cambiar-password', [DashboardController::class, 'cambiar_
 
 // ----- API Tareas-----
 // Ver Tareas
-$router->get('/api/tareas', [Tareacontroller::class, 'index']);
+$router->get('/api/tareas', [TareaController::class, 'index']);
 // Crear Tareas
-$router->post('/api/tarea', [Tareacontroller::class, 'crear']);
+$router->post('/api/tarea', [TareaController::class, 'crear']);
 // Actualizar Tareas
-$router->post('/api/tarea/actualizar', [Tareacontroller::class, 'actualizar']);
+$router->post('/api/tarea/actualizar', [TareaController::class, 'actualizar']);
 // Eliminar Tareas
-$router->post('/api/tarea/eliminar', [Tareacontroller::class, 'eliminar']);
+$router->post('/api/tarea/eliminar', [TareaController::class, 'eliminar']);
 
 // ----- API Tareas END-----
 

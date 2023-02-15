@@ -5,7 +5,7 @@ namespace Controllers;
 use Model\Proyecto;
 use Model\Tarea;
 
-class Tareacontroller
+class TareaController
 {
     public static function index()
     {
