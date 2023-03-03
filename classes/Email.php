@@ -58,7 +58,7 @@ class Email
                 $contenido .= '</html>';
 
                 // Texto plano alternativo
-                $contenidoAlt = 'Bienvenido ' . $receptor . '. Visite el siguiente enlace para poder verificar su cuenta en AppSalon: ' . $url . '/confirmar?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+                $contenidoAlt = 'Bienvenido ' . $receptor . '. Visite el siguiente enlace para poder verificar su cuenta en UpTask: ' . $url . '/confirmar?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
 
                 break;
 
@@ -76,7 +76,7 @@ class Email
                 $contenido .= '</html>';
 
                 // Texto plano alternativo
-                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en AppSalon: ' . $url . '/reestablecer?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
+                $contenidoAlt = 'Hola ' . $receptor . '. Visite el siguiente enlace para reestablecer su contraseña en UpTask: ' . $url . '/reestablecer?token=' . $this->token . ' | Si usted no solicitó la información anterior, puede ignorar este mensaje.';
                 break;
             default:
                 $contenido = '';
